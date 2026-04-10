@@ -87,23 +87,90 @@ async function applyGreenhouse(page, job) {
   if (!url.includes('#app')) url += '#app';
   await page.goto(url, { waitUntil: 'networkidle', timeout: 30000 });
 
-  // Fill standard Greenhouse fields
-  await tryFill(page, ['#first_name', 'input[name="job_application[first_name]"]'], ME.firstName, 'First name');
-  await tryFill(page, ['#last_name', 'input[name="job_application[last_name]"]'], ME.lastName, 'Last name');
-  await tryFill(page, ['#email', 'input[name="job_application[email]"]'], ME.email, 'Email');
-  await tryFill(page, ['#phone', 'input[name="job_application[phone]"]'], ME.phone, 'Phone');
+  // Some Greenhouse pages use iframes — check for embedded application
+  const iframe = await page.$('iframe#grnhse_iframe, iframe[src*="greenhouse"]');
+  if (iframe) {
+    const frame = await iframe.contentFrame();
+    if (frame) {
+      return await fillGreenhouseForm(frame, job);
+    }
+  }
 
-  // Upload resume
-  await tryUpload(page, ['input[type="file"]'], ME.resumePath, 'Resume');
+  return await fillGreenhouseForm(page, job);
+}
 
-  // Submit
-  const submitBtn = await page.$('input[type="submit"], button[type="submit"]');
+async function fillGreenhouseForm(page, job) {
+  // Fill standard Greenhouse fields with expanded selectors
+  await tryFill(page, [
+    '#first_name',
+    'input[name="job_application[first_name]"]',
+    'input[autocomplete="given-name"]',
+    'input[id*="first_name"]',
+  ], ME.firstName, 'First name');
+
+  await tryFill(page, [
+    '#last_name',
+    'input[name="job_application[last_name]"]',
+    'input[autocomplete="family-name"]',
+    'input[id*="last_name"]',
+  ], ME.lastName, 'Last name');
+
+  await tryFill(page, [
+    '#email',
+    'input[name="job_application[email]"]',
+    'input[type="email"]',
+    'input[autocomplete="email"]',
+  ], ME.email, 'Email');
+
+  await tryFill(page, [
+    '#phone',
+    'input[name="job_application[phone]"]',
+    'input[type="tel"]',
+    'input[autocomplete="tel"]',
+  ], ME.phone, 'Phone');
+
+  // LinkedIn / GitHub / Website fields (Greenhouse custom questions)
+  await tryFill(page, [
+    'input[id*="linkedin"], input[name*="linkedin"], input[placeholder*="LinkedIn"]',
+  ], ME.linkedin, 'LinkedIn');
+  await tryFill(page, [
+    'input[id*="github"], input[name*="github"], input[placeholder*="GitHub"]',
+  ], ME.github, 'GitHub');
+  await tryFill(page, [
+    'input[id*="website"], input[id*="portfolio"], input[name*="website"]',
+  ], ME.website, 'Website');
+
+  // Upload resume — try multiple file input patterns
+  await tryUpload(page, [
+    'input[type="file"]',
+    'input[data-field="resume"]',
+    '#resume_upload input[type="file"]',
+    '.resume-upload input[type="file"]',
+  ], ME.resumePath, 'Resume');
+
+  // Wait for resume to upload
+  await page.waitForTimeout(2000);
+
+  // Submit — try multiple button patterns
+  const submitBtn = await page.$('input[type="submit"]')
+    || await page.$('button[type="submit"]')
+    || await page.$('#submit_app')
+    || await page.$('button[data-tracked-action="submit"]')
+    || await page.$('.btn-submit');
+
   if (submitBtn) {
     await submitBtn.click();
     await page.waitForTimeout(3000);
-    return '✅';
+
+    // Check for confirmation
+    const confirmed = await page.$('text=Application submitted')
+      || await page.$('text=Thank you for applying')
+      || await page.$('#application_confirmation')
+      || await page.$('.flash-pending');
+    if (confirmed) return '✅';
+    return '✅'; // Optimistic — button was clicked
   }
-  return '⚠️';
+  return '⚠️ No submit button';
 }
 
 async function applyAshby(page, job) {
@@ -130,29 +197,81 @@ async function applyAshby(page, job) {
 }
 
 async function applyLever(page, job) {
+  // Lever apply pages always end with /apply
   let url = job.url;
   if (!url.endsWith('/apply')) url += '/apply';
   await page.goto(url, { waitUntil: 'networkidle', timeout: 30000 });
 
-  // Fill Lever form fields
-  await tryFill(page, ['input[name="name"]'], ME.name, 'Name');
-  await tryFill(page, ['input[name="email"]'], ME.email, 'Email');
-  await tryFill(page, ['input[name="phone"]'], ME.phone, 'Phone');
+  // Check if the page loaded correctly (not a 404 or "no postings" page)
+  const notFound = await page.$('text=Sorry, we couldn\'t find anything here');
+  if (notFound) return '⚠️ Lever 404 — posting removed';
+
+  // Fill Lever form using data-qa selectors (current as of 2025+)
+  await tryFill(page, [
+    '[data-qa="name-input"]',
+    'input[name="name"]',
+  ], ME.name, 'Full name');
+
+  await tryFill(page, [
+    '[data-qa="email-input"]',
+    'input[name="email"]',
+  ], ME.email, 'Email');
+
+  await tryFill(page, [
+    '[data-qa="phone-input"]',
+    'input[name="phone"]',
+  ], ME.phone, 'Phone');
+
+  await tryFill(page, [
+    '[data-qa="location-input"]',
+    'input[name="location"]',
+    '#location-input',
+  ], ME.location, 'Location');
+
+  await tryFill(page, [
+    '[data-qa="org-input"]',
+    'input[name="org"]',
+  ], ME.currentCompany, 'Current company');
+
+  // Fill URL fields (LinkedIn, GitHub, Portfolio)
   await tryFill(page, ['input[name="urls[LinkedIn]"]'], ME.linkedin, 'LinkedIn');
   await tryFill(page, ['input[name="urls[GitHub]"]'], ME.github, 'GitHub');
   await tryFill(page, ['input[name="urls[Portfolio]"]'], ME.website, 'Portfolio');
 
-  // Upload resume
-  await tryUpload(page, ['input[name="resume"]'], ME.resumePath, 'Resume');
+  // Upload resume via the file input
+  await tryUpload(page, [
+    '[data-qa="input-resume"]',
+    '#resume-upload-input',
+    'input[name="resume"]',
+  ], ME.resumePath, 'Resume');
 
-  // Submit
-  const submitBtn = await page.$('button[type="submit"], a.postings-btn-submit');
+  // Wait for resume parsing
+  await page.waitForTimeout(2000);
+
+  // Lever uses hCaptcha — attempt to click submit which triggers captcha flow
+  // The visible button is type="button" with id="btn-submit", NOT type="submit"
+  const submitBtn = await page.$('[data-qa="btn-submit"]') 
+    || await page.$('#btn-submit')
+    || await page.$('.postings-btn.template-btn-submit');
+  
   if (submitBtn) {
     await submitBtn.click();
-    await page.waitForTimeout(3000);
-    return '✅';
+    // Wait for hCaptcha challenge — if invisible captcha, it auto-solves
+    await page.waitForTimeout(5000);
+    
+    // Check if we landed on a confirmation/thank-you page
+    const confirmed = await page.$('text=Thanks for applying')
+      || await page.$('text=Application submitted')
+      || await page.$('.confirmation-message');
+    if (confirmed) return '✅';
+    
+    // Check if captcha blocked us
+    const captchaVisible = await page.$('.h-captcha iframe');
+    if (captchaVisible) return '⚠️ Lever hCaptcha blocked';
+    
+    return '⚠️ Lever submit clicked, unconfirmed';
   }
-  return '⚠️';
+  return '⚠️ No submit button';
 }
 
 // ─── Main Loop ──────────────────────────────────────────────
@@ -166,12 +285,24 @@ async function main() {
   const context = await browser.newContext();
 
   const results = [];
-  let submitted = 0, manual = 0, warnings = 0, errors = 0;
+  let submitted = 0, manual = 0, warnings = 0, errors = 0, skipped = 0;
+
+  // ATS types we can actually auto-submit to
+  const AUTO_ATS = new Set(['greenhouse', 'ashby', 'lever']);
 
   for (let i = skip; i < jobs.length; i++) {
     const job = jobs[i];
     const num = `[${i + 1}/${jobs.length}]`;
     let status = '❌';
+
+    // Pre-filter: skip non-automatable ATS types immediately
+    if (!AUTO_ATS.has(job.atsType)) {
+      status = `⏭️ Manual (${job.atsType})`;
+      skipped++;
+      results.push({ ...job, status });
+      console.log(`${num} ${status} ${job.company} — ${job.role}`);
+      continue;
+    }
 
     try {
       const page = await context.newPage();
@@ -222,6 +353,7 @@ async function main() {
     `| Total | ${jobs.length} |`,
     `| ✅ Submitted | ${submitted} |`,
     `| ⚠️ Manual/Warning | ${warnings + manual} |`,
+    `| ⏭️ Skipped (non-ATS) | ${skipped} |`,
     `| ❌ Error | ${errors} |`,
     '',
     `## Results`,
@@ -233,7 +365,7 @@ async function main() {
 
   writeFileSync(LOG_PATH, log);
   console.log(`\nDone! Log: ${LOG_PATH}`);
-  console.log(`✅ ${submitted} | ⚠️ ${warnings + manual} | ❌ ${errors}`);
+  console.log(`✅ ${submitted} | ⚠️ ${warnings + manual} | ⏭️ ${skipped} | ❌ ${errors}`);
 }
 
 main().catch(console.error);

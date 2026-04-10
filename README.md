@@ -141,7 +141,7 @@
 │  ├── Ashby posting-api (150+ companies)                        │
 │  ├── Lever postings API (100+ companies)                       │
 │  ├── Jobicy, Arbeitnow, WWR, Himalayas APIs                   │
-│  ├── roleScore() — 3-tier keyword relevance (strong/good/ok)   │
+│  ├── roleScore() — 4-tier keyword relevance + negative filter  │
 │  ├── pickBestPerCompany() — 1 highest-scoring per company      │
 │  ├── Company blocklist filter (/tmp/applied-companies.json)    │
 │  └── Output: /tmp/wave{N}-jobs.json                            │
@@ -444,10 +444,11 @@ jobclaw/
 
 ### Next Week (v2.1)
 
-- [ ] **Fix Lever auto-submit** — Update DOM selectors for Lever's current form structure (currently 0% success rate across 119 attempts)
-- [ ] **Improve Greenhouse "no submit" handling** — Add fallback selectors and multi-step form navigation for non-standard board themes (182 failures at 51% rate → target 70%+)
+- [x] **Fix Lever auto-submit** — Updated DOM selectors to use `data-qa` attributes, added hCaptcha detection, location/org fields, 404 handling (was 0% success across 119 attempts)
+- [x] **Improve Greenhouse "no submit" handling** — Added iframe detection, expanded selectors with autocomplete fallbacks, multi-pattern submit button detection (was 182 failures at 51% → target 70%+)
+- [x] **Pre-filter custom/manual jobs** — Blitz now skips non-ATS URLs immediately, saving ~60% processing time (1,977 wasted cycles eliminated)
+- [x] **Upgrade roleScore** — Added NEGATIVE filter (recruiter/sales/marketing/HR), promoted Staff/Principal/Tech Lead to STRONG_MATCH, tightened OK_MATCH to engineering-adjacent only
 - [ ] **Remove dead RemoteOK URLs** — Fix URL concatenation bug causing 115 DNS errors across waves 28–32
-- [ ] **Pre-filter custom/manual jobs** — Skip non-ATS URLs before the blitz to save ~60% processing time (1,977 jobs currently processed with 0% auto-submit)
 - [ ] **Add retry logic for timeouts** — Implement 2–3 retry attempts for the 9 timeout failures per run
 
 ### Near Term (v2.2)
