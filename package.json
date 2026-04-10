@@ -1,7 +1,7 @@
 {
   "name": "jobclaw",
-  "version": "2.0.0",
-  "description": "Virgil — AI-powered job search agent. Scrapes, scores, applies, and tracks your entire pipeline.",
+  "version": "2.1.0",
+  "description": "Virgil — AI-powered job search agent. Scrapes 600+ company boards, auto-fills ATS applications, and tracks your entire pipeline from the terminal.",
   "scripts": {
     "verify": "node verify-pipeline.mjs",
     "normalize": "node normalize-statuses.mjs",
