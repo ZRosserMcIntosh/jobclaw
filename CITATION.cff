@@ -1,0 +1,23 @@
+cff-version: 1.2.0
+message: "If you use JobClaw (Virgil), please cite it using these metadata."
+title: "JobClaw: Virgil AI Job Search Agent"
+type: software
+authors:
+  - family-names: "McIntosh"
+    given-names: "Zachary Rosser"
+    website: "https://mcintoshdigital.vercel.app"
+  - family-names: "Fernández de Valderrama"
+    given-names: "Santiago"
+    website: "https://santifer.io"
+url: "https://github.com/ZRosserMcIntosh/jobclaw"
+repository-code: "https://github.com/ZRosserMcIntosh/jobclaw"
+license: MIT
+keywords:
+  - ai
+  - job-search
+  - claude-code
+  - career
+  - automation
+  - virgil
+  - jobclaw
+  - go-tui
