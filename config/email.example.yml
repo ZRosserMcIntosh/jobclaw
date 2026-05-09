@@ -1,0 +1,44 @@
+# ═══════════════════════════════════════════════════════════════
+# Josh Job Agent — Email Configuration
+# ═══════════════════════════════════════════════════════════════
+#
+# The agent sends Josh a personal email after every application —
+# auto-submitted OR queued for manual — with his unique tailored
+# résumé + cover letter attached.
+#
+# ── HOW TO SET UP GMAIL (recommended, free) ──────────────────
+#
+# Option A: Gmail with App Password  ← EASIEST, use this one
+#   1. Go to  https://myaccount.google.com/security
+#   2. Enable 2-Step Verification (if not already on)
+#   3. Go to  https://myaccount.google.com/apppasswords
+#   4. Create a new app password → name it "Virgil Job Agent"
+#   5. Google gives you a 16-character password (e.g. abcd efgh ijkl mnop)
+#   6. Paste it below as smtp_pass (no spaces)
+#
+# Option B: Outlook / Office 365
+#   smtp_host: smtp.office365.com
+#   smtp_port: 587
+#   (same user/pass as your Microsoft account)
+#
+# Option C: Custom SMTP (SendGrid, Mailgun, etc.)
+#   smtp_host: smtp.sendgrid.net
+#   smtp_port: 587
+#   smtp_user: apikey
+#   smtp_pass: SG.xxxxxxxxxxxx
+# ═══════════════════════════════════════════════════════════════
+
+# SMTP server settings
+smtp_host: smtp.gmail.com
+smtp_port: 587
+smtp_secure: false          # true for port 465, false for 587 (STARTTLS)
+
+# Your sending email account (the one whose App Password you created)
+smtp_user: your-gmail@gmail.com
+smtp_pass: abcdefghijklmnop  # 16-char Gmail App Password — no spaces
+
+# Where to send the notifications (Josh's inbox)
+notify_email: joshuapoolos@gmail.com
+
+# Display name that appears in Josh's inbox
+from_name: Virgil Job Agent
