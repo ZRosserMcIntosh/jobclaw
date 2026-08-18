@@ -449,7 +449,7 @@ export function ResumePDF({
       title={`${profile.full_name} — Résumé${targetCompany ? ` for ${targetCompany}` : ''}`}
       author={profile.full_name}
       subject={targetRole ?? 'Résumé'}
-      creator="Virgil Job Agent"
+      creator="JobClaw"
     >
       <Page size="LETTER" style={style.page}>
         <Header profile={profile} style={style} s={s} />

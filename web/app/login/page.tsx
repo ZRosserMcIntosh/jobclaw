@@ -33,7 +33,7 @@ export default function LoginPage() {
   return (
     <main className="mx-auto flex min-h-screen max-w-md flex-col justify-center px-6">
       <div className="rounded-2xl border border-white/10 bg-surface/60 p-8 backdrop-blur">
-        <h1 className="font-display text-3xl font-bold">Sign in to Virgil</h1>
+        <h1 className="font-display text-3xl font-bold">Sign in to JobClaw</h1>
         <p className="mt-2 text-sm text-white/60">10 free job matches, no card required.</p>
 
         <button

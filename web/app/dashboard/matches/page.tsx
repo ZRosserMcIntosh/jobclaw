@@ -169,7 +169,7 @@ export default async function MatchesPage({
         <div className="mt-10 rounded-2xl border border-primary/30 bg-primary/5 p-6 text-center">
           <p className="font-display text-lg font-bold">Like what you see?</p>
           <p className="mt-1 text-sm text-white/70">
-            Virgil can auto-submit all {recs.length} of these, send you a receipt with the tailored PDFs, and find 100 more tomorrow.
+            JobClaw can auto-submit all {recs.length} of these, send you a receipt with the tailored PDFs, and find 100 more tomorrow.
           </p>
           <Link
             href="/pricing"

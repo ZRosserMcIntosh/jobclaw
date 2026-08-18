@@ -13,7 +13,7 @@ export default function HomePage() {
           while you sleep.
         </h1>
         <p className="mx-auto mt-6 max-w-2xl text-lg text-white/70">
-          Upload your résumé. Virgil scans 600+ company boards, picks the 10 best
+          Upload your résumé. JobClaw scans 600+ company boards, picks the 10 best
           matches free, then tailors a unique résumé + cover letter per role and
           auto-submits the application for you.
         </p>
@@ -61,7 +61,7 @@ export default function HomePage() {
       </section>
 
       <footer className="mt-24 border-t border-white/10 pt-6 text-center text-sm text-white/40">
-        © {new Date().getFullYear()} Virgil · Built on Jobclaw
+        © {new Date().getFullYear()} JobClaw · A Railgun product
       </footer>
     </main>
   );

@@ -103,7 +103,7 @@ export function CoverLetterPDF({ profile, s, company, role, body, hiringManagerN
     <Document
       title={`${profile.full_name} — Cover Letter for ${company}`}
       author={profile.full_name}
-      creator="Virgil Job Agent"
+      creator="JobClaw"
     >
       <Page size="LETTER" style={style.page}>
         {/* Header */}

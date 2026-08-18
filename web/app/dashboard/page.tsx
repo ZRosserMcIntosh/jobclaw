@@ -71,7 +71,7 @@ export default async function DashboardPage() {
           <h3 className="font-display text-lg font-bold">Ready to auto-apply?</h3>
           <p className="mt-1 text-sm text-white/70">
             Free tier gives you 10 matched jobs + tailored PDFs to download.
-            Upgrade to Starter ($19/mo) and Virgil submits the applications for you.
+            Upgrade to Starter ($19/mo) and JobClaw submits the applications for you.
           </p>
           <Link
             href="/pricing"
