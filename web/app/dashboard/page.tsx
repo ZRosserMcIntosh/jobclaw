@@ -68,16 +68,16 @@ export default async function DashboardPage() {
 
       {plan === 'free' && (
         <aside className="mt-10 rounded-2xl border border-primary/30 bg-primary/5 p-6">
-          <h3 className="font-display text-lg font-bold">Ready to auto-apply?</h3>
+          <h3 className="font-display text-lg font-bold">You&apos;re on the free beta</h3>
           <p className="mt-1 text-sm text-white/70">
-            Free tier gives you 10 matched jobs + tailored PDFs to download.
-            Upgrade to Starter ($19/mo) and JobClaw submits the applications for you.
+            Matched jobs and tailored PDFs are free while JobClaw is in beta.
+            Having it submit the applications for you isn&apos;t built yet.
           </p>
           <Link
             href="/pricing"
-            className="mt-4 inline-block rounded-full bg-primary px-5 py-2 text-sm font-semibold text-white"
+            className="mt-4 inline-block rounded-full border border-white/20 px-5 py-2 text-sm font-semibold text-white/90 hover:bg-white/5"
           >
-            See plans →
+            What&apos;s coming →
           </Link>
         </aside>
       )}

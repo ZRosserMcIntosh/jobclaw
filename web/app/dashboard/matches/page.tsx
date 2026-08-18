@@ -1,6 +1,7 @@
 import { redirect }     from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import Link             from 'next/link';
+import { WaitlistForm } from '@/components/waitlist-form';
 
 const ATS_LABELS: Record<string, string> = {
   greenhouse:  '🌱 Greenhouse',
@@ -164,19 +165,21 @@ export default async function MatchesPage({
         })}
       </div>
 
-      {/* Upgrade CTA at bottom for free users */}
+      {/* Auto-apply is not built. Collect intent instead of selling it. */}
       {!isPaid && recs && recs.length > 0 && (
-        <div className="mt-10 rounded-2xl border border-primary/30 bg-primary/5 p-6 text-center">
-          <p className="font-display text-lg font-bold">Like what you see?</p>
-          <p className="mt-1 text-sm text-white/70">
-            JobClaw can auto-submit all {recs.length} of these, send you a receipt with the tailored PDFs, and find 100 more tomorrow.
+        <div className="mt-10 rounded-2xl border border-white/10 bg-surface/50 p-6">
+          <p className="font-display text-lg font-bold">
+            Want JobClaw to send these for you?
           </p>
-          <Link
-            href="/pricing"
-            className="mt-4 inline-block rounded-full bg-primary px-6 py-2.5 text-sm font-semibold text-white"
-          >
-            Upgrade from $19/mo →
-          </Link>
+          <p className="mt-1 text-sm text-white/70">
+            It can&apos;t yet — submitting applications on your behalf isn&apos;t
+            built. Downloading the tailored PDFs above and sending them yourself
+            is the whole product today. Leave your email and we&apos;ll tell you
+            when that changes.
+          </p>
+          <div className="mt-5 max-w-md">
+            <WaitlistForm interest="auto_apply" source="matches" />
+          </div>
         </div>
       )}
     </main>

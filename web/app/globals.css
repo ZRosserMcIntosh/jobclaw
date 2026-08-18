@@ -6,8 +6,8 @@
 
 body {
   background:
-    radial-gradient(ellipse 80% 50% at 50% -20%, hsla(270,70%,40%,0.3), transparent),
-    #0b0b14;
-  color: #e8e8f0;
+    radial-gradient(ellipse 80% 50% at 50% -20%, hsla(172, 66%, 28%, 0.26), transparent),
+    #0a0f12;
+  color: #e4efed;
   min-height: 100vh;
 }
