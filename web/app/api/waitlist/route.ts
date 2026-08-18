@@ -56,7 +56,14 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'Waitlist is temporarily unavailable.' }, { status: 503 });
   }
 
-  const supabase = createClient(url, key, { auth: { persistSession: false } });
+  // `jobclaw` schema, not `public` — this project is shared with the
+  // Railgun API and Meet, and an unqualified table name is how two owners
+  // end up fighting over the same object. Requires `jobclaw` to be listed
+  // under Settings → API → Exposed schemas, or PostgREST returns PGRST106.
+  const supabase = createClient(url, key, {
+    auth: { persistSession: false },
+    db: { schema: 'jobclaw' },
+  });
 
   const { error } = await supabase
     .from('waitlist')
